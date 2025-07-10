@@ -3,6 +3,7 @@ using System;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250710193830_MemberEntityAdded")]
+    partial class MemberEntityAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.7");
@@ -77,43 +80,12 @@ namespace API.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("TravelDate")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.ToTable("Clients");
-                });
-
-            modelBuilder.Entity("API.Entities.Destiny", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ClientId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Persons")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Tours")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("TravelDate")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClientId");
-
-                    b.ToTable("Destinies");
                 });
 
             modelBuilder.Entity("API.Entities.Document", b =>
@@ -148,17 +120,6 @@ namespace API.Data.Migrations
                     b.ToTable("Documents");
                 });
 
-            modelBuilder.Entity("API.Entities.Destiny", b =>
-                {
-                    b.HasOne("API.Entities.Client", "Client")
-                        .WithMany("Destinies")
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Client");
-                });
-
             modelBuilder.Entity("API.Entities.Document", b =>
                 {
                     b.HasOne("API.Entities.Client", "Client")
@@ -172,8 +133,6 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Entities.Client", b =>
                 {
-                    b.Navigation("Destinies");
-
                     b.Navigation("Documents");
                 });
 #pragma warning restore 612, 618
