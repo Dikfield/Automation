@@ -1,0 +1,21 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using API.DTOs;
+using API.Entities;
+
+namespace API.Interfaces
+{
+    public interface IClientRepository
+    {
+        void Update(Client client);
+        Task<bool> SaveAllAsync();
+        Task<Client> CreateClientAsync(CreateClientDto client);
+        Task<Document> AddDocumentAsync(DocumentDto document);
+        Task<DestinyDto> AddDestinyAsync(DestinyDto destiny);
+        Task<IReadOnlyList<ClientDto>> GetClientsAsync();
+        Task<ClientDto?> GetClientByIdAsync(string id);
+        Task<ClientDto?> LoginAsync(ClientLoginDto loginDto);
+    }
+}

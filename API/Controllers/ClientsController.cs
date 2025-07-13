@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using API.Data;
 using API.DTOs;
 using API.Entities;
@@ -9,64 +8,45 @@ using Microsoft.EntityFrameworkCore;
 namespace API.Controllers
 {
     public class ClientsController(
+        IClientRepository clientRepository,
         AppDbContext context,
         ITokenService tokenService
-        //IAzureStorage azureStorage
+    //IAzureStorage azureStorage
     ) : BaseApiController
     {
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<Client>>> GetCLients()
+        public async Task<ActionResult<IReadOnlyList<ClientDto>>> GetCLients()
         {
-            var clients = await context.Clients.ToListAsync();
-
-            return clients;
+            return Ok(await clientRepository.GetClientsAsync());
         }
 
-        [HttpGet("{name}")]
-        public async Task<ActionResult<Client>> GetClient(string name)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ClientDto?>> GetClient(string id)
         {
-            var client = await context.Clients.FindAsync(name);
-
-            if (client == null)
-                return NotFound();
-
-            return client;
+            return await clientRepository.GetClientByIdAsync(id);
         }
 
         [HttpPost]
         public async Task<ActionResult<Client>> CreateClient(CreateClientDto createClientDto)
         {
-            var client = new Client()
-            {
-                Name = createClientDto.Name,
-                Cpf = createClientDto.Cpf,
-                BirthDate = createClientDto.BirthDate,
-                PassNumber = createClientDto.PassNumber,
-                Telephone = createClientDto.Telephone,
-                Email = createClientDto.Email,
-                Code = createClientDto.Cpf,
-            };
+            return await clientRepository.CreateClientAsync(createClientDto);
+        }
 
-            context.Clients.Add(client);
-            await context.SaveChangesAsync();
-
-            return client;
+        [HttpPost("AddDestiny")]
+        public async Task<ActionResult<DestinyDto>> AddDestiny(DestinyDto destinyDto)
+        {
+            return await clientRepository.AddDestinyAsync(destinyDto);
         }
 
         [HttpPost("login")]
         public async Task<ActionResult<ClientDto>> Login(ClientLoginDto loginDto)
         {
-            var client = await context.Clients.SingleOrDefaultAsync(x => x.Code == loginDto.Code);
+            var clientDto = await clientRepository.LoginAsync(loginDto);
 
-            if (client == null)
-                return Unauthorized("Code");
+            if (clientDto == null)
+                return Unauthorized("Invalid code");
 
-            return new ClientDto
-            {
-                Name = client.Name,
-                Email = client.Email,
-                Token = tokenService.CreateToken(client.Email, client.Id),
-            };
+            return Ok(clientDto);
         }
 
         // [HttpPost("addDocuments")]

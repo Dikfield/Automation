@@ -16,14 +16,15 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
 
         // Exemplo de configuração de relacionamento (opcional)
         modelBuilder
-            .Entity<Client>()
-            .HasMany(c => c.Destinies)
-            .WithOne()
+            .Entity<Destiny>()
+            .HasOne(d => d.Client)
+            .WithMany(c => c.Destinies)
             .HasForeignKey(d => d.ClientId);
+
         modelBuilder
-            .Entity<Client>()
-            .HasMany(c => c.Documents)
-            .WithOne()
+            .Entity<Document>()
+            .HasOne(d => d.Client)
+            .WithMany(c => c.Documents)
             .HasForeignKey(d => d.ClientId);
     }
 }

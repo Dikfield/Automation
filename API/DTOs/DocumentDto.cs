@@ -7,9 +7,11 @@ namespace API.DTOs
 {
     public class DocumentDto
     {
-        public required string ClientCpf { get; set; }
+        public int Id { get; set; }
+        public required string ClientID { get; set; }
         public required string FileName { get; set; }
         public required string ContentType { get; set; }
-        public required IFormFile File { get; set; }
+        public required string Url { get; set; }
+        public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
     }
 }

@@ -4,7 +4,6 @@ using API.Interfaces;
 using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +17,8 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 });
 
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IAppUserRepository, AppUserRepository>();
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
 //builder.Services.AddScoped<IAzureStorage, AzureStorage>();
 builder
     .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
