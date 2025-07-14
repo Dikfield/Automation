@@ -15,7 +15,7 @@ namespace API.Controllers
 
         [Authorize]
         [HttpGet("{id}")]
-        public async Task<ActionResult<AppUser>> GetMember(string id)
+        public async Task<ActionResult<AppUser?>> GetMember(string id)
         {
             var member = await userRepository.GetAppUserByIdAsync(id);
 

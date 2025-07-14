@@ -9,16 +9,27 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenLocalhost(
+        5001,
+        listenOptions =>
+        {
+            listenOptions.UseHttps("backend-cert.pfx", "");
+        }
+    );
+});
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-
+builder.Services.AddCors();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAppUserRepository, AppUserRepository>();
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
+
 //builder.Services.AddScoped<IAzureStorage, AzureStorage>();
 builder
     .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -41,6 +52,13 @@ var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseCors(opt =>
+{
+    opt.AllowAnyHeader()
+        .AllowAnyMethod()
+        .WithOrigins("http://localhost:4200", "https://localhost:4200")
+        .AllowCredentials();
+});
 app.MapControllers();
 
 using var scope = app.Services.CreateScope();
