@@ -1,3 +1,9 @@
 <app-nav />
 
-<app-home [clientsFromApp]="clients()" />
+<div
+  [class.mt-24]="router.url !== '/'"
+  [class.mt-container]="router.url !== '/'"
+  [class.mt-auto]="router.url !== '/'"
+>
+  <router-outlet />
+</div>
