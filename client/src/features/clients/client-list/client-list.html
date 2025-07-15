@@ -1,1 +1,5 @@
-<p>client-list works!</p>
+<div class="grid grid-cols-5 gap-6">
+  @for (client of clients$ | async; track client.id) {
+  <app-client-card [client]="client" />
+  }
+</div>

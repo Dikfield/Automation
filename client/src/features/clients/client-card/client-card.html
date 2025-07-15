@@ -1,0 +1,19 @@
+@if (client(); as client){
+<div
+  routerLink="/clients/{{ client.id }}"
+  class="card cursos-pointer transition-all duration-300 ease-in-out transform hover:-translate-y-2"
+>
+  <div
+    class="card-actions z-50 w-full px-3 py-1 rounded-b-lg bg-gradient-to-t from-blue-600 via-blue-450 to-blue-300"
+  >
+    <div class="flex flex-col text-black">
+      <span class="font-semibold">{{ client.name }}</span>
+      <span class="text-sm">Email - {{ client.email }}</span>
+      <span class="text-sm">CPF - {{ client.cpf }}</span>
+      <span class="text-sm">Data de Aniversario - {{ client.BirthDate }}</span>
+      <span class="text-sm">Passaporte - {{ client.passNumber }}</span>
+      <span class="text-sm">Telefone - {{ client.telephone }}</span>
+    </div>
+  </div>
+</div>
+}

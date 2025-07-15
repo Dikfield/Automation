@@ -7,8 +7,8 @@ export type Client = {
   telephone: string;
   cpf: string;
   code: string;
-  BirthDate: Date;
-  createdAt: Date;
+  BirthDate: string;
+  createdAt: string;
   passNumber: string;
   token: string;
   documents: Document[];

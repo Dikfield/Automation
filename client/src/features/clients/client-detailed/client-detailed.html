@@ -1,1 +1,3 @@
-<p>client-detailed works!</p>
+@if(client$ | async; as client) {
+  <h1 class="text-3xl">{{client.name}}</h1>
+}
