@@ -16,6 +16,9 @@ namespace API.Interfaces
         Task<DestinyDto> AddDestinyAsync(DestinyDto destiny);
         Task<IReadOnlyList<ClientDto>> GetClientsAsync();
         Task<ClientDto?> GetClientByIdAsync(string id);
+        Task<Document?> GetDocumentByIdAsync(int id);
+        Task<IReadOnlyList<Document>> GetClientDocumentsByIdAsync(string id);
+        Task<Client?> GetClientByIdInternalAsync(string id);
         Task<ClientDto?> LoginAsync(ClientLoginDto loginDto);
     }
 }

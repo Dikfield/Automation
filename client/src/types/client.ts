@@ -1,4 +1,5 @@
 import { Destiny } from './destiny';
+import { Document } from './document';
 
 export type Client = {
   id: string;

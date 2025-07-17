@@ -1,3 +1,40 @@
-@if(client$ | async; as client) {
-  <h1 class="text-3xl">{{client.name}}</h1>
+@if(client(); as client) {
+<div class="flex gap-6">
+  <div class="card bg-base-100 flex flex-col h-[85vh] w-1/4">
+    <img src="/user.png" alt="" class="rounded-full mx-10 mt-3 object-cover" />
+    <div class="card-body">
+      <div class="flex flex-col items-center">
+        <div class="flex text-2xl text-primary items-center">
+          {{ client.name }}
+        </div>
+        <div class="text-sm">
+          {{ client.email }}
+        </div>
+      </div>
+      <div class="divider"></div>
+      <ul class="menu rounded-box w-full text-xl">
+        <li>
+          <a routerLink="profile" routerLinkActive="text-primary">Profile</a>
+        </li>
+        <li>
+          <a routerLink="documents" routerLinkActive="text-primary"
+            >Documents</a
+          >
+        </li>
+      </ul>
+      <div class="card-actions justity-between gap-2 px-2 mb-3">
+        <button class="btn btn-info flex-1">Voltar</button>
+      </div>
+    </div>
+  </div>
+  <div class="card bg-base-100 w-3/4 p-6 flex flex-col h-[85vh]">
+    <h3 class="card-title text-3xl text-primary">{{ title() }}</h3>
+    <div class="divider"></div>
+    <div class="h-full">
+      <router-outlet />
+    </div>
+  </div>
+</div>
+} @else{
+<div>Member not found</div>
 }

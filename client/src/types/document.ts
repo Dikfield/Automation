@@ -3,5 +3,6 @@ export type Document = {
   fileName: string;
   contentType: string;
   url: string;
+  publicId: string;
   uploadedAt: Date;
 };

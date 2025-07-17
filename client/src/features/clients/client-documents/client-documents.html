@@ -1,0 +1,35 @@
+@if(client(); as client) {
+<div class="flex flex-col gap-3">
+  <h3 class="text-lg font semibold text-primary">Informações do client</h3>
+  <div class="relative w-full overflow-hidden">
+    <button
+      (click)="scrollLeft()"
+      class="absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow rounded-full p-2 z-10"
+    >
+      ◀
+    </button>
+
+    <div #carousel class="flex overflow-x-auto scroll-smooth space-x-4 px-10">
+      @for (document of client.documents; track document.id) {
+      <div class="min-w-[300px] bg-base-200 rounded-xl p-4 shrink-0">
+        <div class="font-semibold">Nome:</div>
+        <div class="mb-2">{{ document.fileName }}</div>
+
+        <div class="font-semibold">Enviado:</div>
+        <div class="mb-2">{{ document.uploadedAt }}</div>
+
+        <div class="font-semibold">Tipo:</div>
+        <div class="mb-2">{{ document.contentType }}</div>
+      </div>
+      }
+    </div>
+
+    <button
+      (click)="scrollRight()"
+      class="absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow rounded-full p-2 z-10"
+    >
+      ▶
+    </button>
+  </div>
+</div>
+}

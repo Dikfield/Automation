@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
@@ -70,6 +65,15 @@ namespace API.Data
             throw new NotImplementedException();
         }
 
+        public async Task<Document?> GetDocumentByIdAsync(int id)
+        {
+            var document = await context.Documents.FindAsync(id);
+            if (document == null)
+                return null;
+
+            return document;
+        }
+
         public async Task<ClientDto?> GetClientByIdAsync(string id)
         {
             var client = await context
@@ -82,6 +86,18 @@ namespace API.Data
             return CreateClientDto(client);
         }
 
+        public async Task<Client?> GetClientByIdInternalAsync(string id)
+        {
+            var client = await context
+                .Clients.Include(c => c.Documents)
+                .Include(c => c.Destinies)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (client == null)
+                return null;
+            return client;
+        }
+
         public async Task<IReadOnlyList<ClientDto>> GetClientsAsync()
         {
             var clients = await context
@@ -90,6 +106,18 @@ namespace API.Data
                 .ToListAsync();
 
             return clients.Select(CreateClientDto).ToList();
+        }
+
+        public async Task<IReadOnlyList<Document>> GetClientDocumentsByIdAsync(string id)
+        {
+            var client = await context
+                .Clients.Include(c => c.Documents)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (client == null)
+                return new List<Document>();
+
+            return client.Documents.ToList();
         }
 
         public async Task<ClientDto?> LoginAsync(ClientLoginDto loginDto)
@@ -135,6 +163,7 @@ namespace API.Data
                         FileName = d.FileName,
                         ContentType = d.ContentType,
                         ClientID = d.ClientId,
+                        PublicId = d.PublicId,
                         Url = d.Url,
                     })
                     .ToList(),

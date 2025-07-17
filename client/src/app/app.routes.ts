@@ -4,6 +4,9 @@ import { ClientList } from '../features/clients/client-list/client-list';
 import { ClientDetailed } from '../features/clients/client-detailed/client-detailed';
 import { Lists } from '../features/lists/lists';
 import { authGuard } from '../core/guards/auth-guard';
+import { ClientDocuments } from '../features/clients/client-documents/client-documents';
+import { ClientProfile } from '../features/clients/client-profile/client-profile';
+import { clientResolver } from '../features/clients/client-resolver-resolver';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -13,7 +16,17 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'clients', component: ClientList },
-      { path: 'clients/:id', component: ClientDetailed },
+      {
+        path: 'clients/:id',
+        resolve: { client: clientResolver },
+        runGuardsAndResolvers: 'always',
+        component: ClientDetailed,
+        children: [
+          { path: '', redirectTo: 'Profile', pathMatch: 'full' },
+          { path: 'profile', component: ClientProfile, title: 'Profile' },
+          { path: 'documents', component: ClientDocuments, title: 'Documents' },
+        ],
+      },
       { path: 'lists', component: Lists },
     ],
   },

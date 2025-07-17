@@ -3,16 +3,11 @@ using API.DTOs;
 using API.Entities;
 using API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    public class ClientsController(
-        IClientRepository clientRepository,
-        AppDbContext context,
-        ITokenService tokenService
-    //IAzureStorage azureStorage
-    ) : BaseApiController
+    public class ClientsController(IClientRepository clientRepository, IFileService fileService)
+        : BaseApiController
     {
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ClientDto>>> GetCLients()
@@ -24,6 +19,16 @@ namespace API.Controllers
         public async Task<ActionResult<ClientDto?>> GetClient(string id)
         {
             return await clientRepository.GetClientByIdAsync(id);
+        }
+
+        [HttpGet("{id}/documents")]
+        public async Task<ActionResult<IReadOnlyList<Document>>> GetClientDocuments(string id)
+        {
+            var documents = await clientRepository.GetClientDocumentsByIdAsync(id);
+            if (documents == null)
+                return NotFound("Client not found");
+
+            return documents.ToList();
         }
 
         [HttpPost]
@@ -49,24 +54,66 @@ namespace API.Controllers
             return Ok(clientDto);
         }
 
-        // [HttpPost("addDocuments")]
-        // public async Task<ActionResult<Document>> AddDocuments(DocumentDto documentDto)
-        // {
-        //     var client = await context.Clients.FindAsync(documentDto.ClientCpf);
+        [HttpPost("uploadFile")]
+        public async Task<ActionResult<string>> AddDocument(
+            [FromForm] DocumentCreateDto documentCreateDto
+        )
+        {
+            var client = await clientRepository.GetClientByIdInternalAsync(
+                documentCreateDto.ClientId
+            );
 
-        //     if (client == null)
-        //         return Unauthorized("CLient not found");
+            if (client == null)
+                return BadRequest("Client not found");
 
-        //     var document = new Document
-        //     {
-        //         FileName = documentDto.FileName,
-        //         ContentType = documentDto.ContentType,
-        //         Url = await azureStorage.UploadFileAsync(documentDto.File, documentDto.FileName),
-        //     };
+            var result = await fileService.UploadAsync(documentCreateDto.File);
 
-        //     client.Documents.Add(document);
+            if (result.Error != null)
+                return BadRequest(result.Error.Message);
 
-        //     return document;
-        // }
+            var document = new Document
+            {
+                FileName = documentCreateDto.File.FileName,
+                ContentType = documentCreateDto.File.ContentType,
+                Url = result.SecureUrl.ToString(),
+                PublicId = result.PublicId,
+                ClientId = documentCreateDto.ClientId,
+            };
+            client.Documents.Add(document);
+
+            if (await clientRepository.SaveAllAsync())
+                return Ok(document.FileName);
+
+            return BadRequest("Problem saving document");
+        }
+
+        [HttpGet("download/{id}")]
+        public async Task<IActionResult> DownloadDocument(int id)
+        {
+            var document = await clientRepository.GetDocumentByIdAsync(id);
+
+            if (document == null)
+                return NotFound("Document not found");
+
+            var resourceType = DetectResourceType(document.PublicId);
+
+            var fileBytes = await fileService.DownloadFileAsync(document.PublicId, resourceType);
+
+            return File(fileBytes, document.ContentType, document.FileName);
+        }
+
+        private string DetectResourceType(string publicId)
+        {
+            var ext = Path.GetExtension(publicId).ToLowerInvariant();
+
+            if (string.IsNullOrWhiteSpace(ext))
+                return "raw";
+
+            return ext switch
+            {
+                ".jpg" or ".jpeg" or ".png" or ".gif" or ".webp" => "image",
+                _ => "raw",
+            };
+        }
     }
 }

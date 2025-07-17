@@ -12,6 +12,7 @@ namespace API.DTOs
         public required string FileName { get; set; }
         public required string ContentType { get; set; }
         public required string Url { get; set; }
+        public required string PublicId { get; set; }
         public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
     }
 }

@@ -12,11 +12,17 @@ export class ClientService {
   private accountService = inject(AccountService);
   private baseUrl = environment.apiUrl;
 
-  getMembers() {
+  getCLients() {
     return this.http.get<Client[]>(this.baseUrl + 'clients');
   }
 
-  getMember(id: string) {
+  getClient(id: string) {
     return this.http.get<Client>(this.baseUrl + 'clients/' + id);
+  }
+
+  getClientDocuments(id: string) {
+    return this.http.get<Document[]>(
+      this.baseUrl + 'Clients/' + id + '/documents'
+    );
   }
 }

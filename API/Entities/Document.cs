@@ -8,6 +8,7 @@ namespace API.Entities
         public required string Url { get; set; }
         public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
         public Client Client { get; set; } = null!;
+        public required string PublicId { get; set; }
         public string ClientId { get; set; } = null!;
     }
 }

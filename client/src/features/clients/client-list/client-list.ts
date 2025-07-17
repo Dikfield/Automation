@@ -16,6 +16,6 @@ export class ClientList {
   protected clients$: Observable<Client[]>;
 
   constructor() {
-    this.clients$ = this.clientService.getMembers();
+    this.clients$ = this.clientService.getCLients();
   }
 }

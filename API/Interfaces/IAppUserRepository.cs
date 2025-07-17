@@ -7,6 +7,6 @@ namespace API.Interfaces
         void Update(AppUser user);
         Task<bool> SaveAllAsync();
         Task<IReadOnlyList<AppUser>> GetAppUsersAsync();
-        Task<AppUser> GetAppUserByIdAsync(string id);
+        Task<AppUser?> GetAppUserByIdAsync(string id);
     }
 }
