@@ -1,4 +1,4 @@
-export type Document = {
+export type ClientFiles = {
   id: number;
   fileName: string;
   contentType: string;

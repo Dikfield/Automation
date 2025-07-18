@@ -7,6 +7,7 @@ import { authGuard } from '../core/guards/auth-guard';
 import { ClientDocuments } from '../features/clients/client-documents/client-documents';
 import { ClientProfile } from '../features/clients/client-profile/client-profile';
 import { clientResolver } from '../features/clients/client-resolver-resolver';
+import { ClientDestinies } from '../features/clients/client-destinies/client-destinies';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -23,8 +24,13 @@ export const routes: Routes = [
         component: ClientDetailed,
         children: [
           { path: '', redirectTo: 'Profile', pathMatch: 'full' },
-          { path: 'profile', component: ClientProfile, title: 'Profile' },
-          { path: 'documents', component: ClientDocuments, title: 'Documents' },
+          { path: 'profile', component: ClientProfile, title: 'Perfil' },
+          {
+            path: 'documents',
+            component: ClientDocuments,
+            title: 'Documentos',
+          },
+          { path: 'destinies', component: ClientDestinies, title: 'Destinos' },
         ],
       },
       { path: 'lists', component: Lists },

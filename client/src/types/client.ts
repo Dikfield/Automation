@@ -1,5 +1,5 @@
 import { Destiny } from './destiny';
-import { Document } from './document';
+import { ClientFiles } from './clientFiles';
 
 export type Client = {
   id: string;
@@ -12,6 +12,6 @@ export type Client = {
   createdAt: string;
   passNumber: string;
   token: string;
-  documents: Document[];
+  clientFiles: ClientFiles[];
   destinies: Destiny[];
 };

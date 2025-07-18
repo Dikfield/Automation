@@ -1,5 +1,16 @@
+@if(showForm) {
+<div>
+  <app-register-client (cancelRegister)="toggleForm()"/>
+</div>
+
+}
 <div class="grid grid-cols-5 gap-6">
+  @if(!showForm) {
+
+  <button type="submit" class="btn btn-primary" (click)="toggleForm()">
+    Registrar Cliente
+  </button>
   @for (client of clients$ | async; track client.id) {
   <app-client-card [client]="client" />
-  }
+  } }
 </div>

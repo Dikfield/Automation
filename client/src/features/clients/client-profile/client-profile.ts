@@ -1,6 +1,6 @@
 import { ActivatedRoute } from '@angular/router';
 import { Client } from '../../../types/client';
-import { Component, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 
 @Component({
   selector: 'app-client-profile',
@@ -18,15 +18,5 @@ export class ClientProfile implements OnInit {
         this.client.set(data['client']);
       },
     });
-  }
-
-  @ViewChild('carousel', { static: false }) carousel!: ElementRef;
-
-  scrollLeft() {
-    this.carousel.nativeElement.scrollBy({ left: -320, behavior: 'smooth' });
-  }
-
-  scrollRight() {
-    this.carousel.nativeElement.scrollBy({ left: 320, behavior: 'smooth' });
   }
 }

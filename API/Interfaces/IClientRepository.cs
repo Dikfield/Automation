@@ -12,12 +12,11 @@ namespace API.Interfaces
         void Update(Client client);
         Task<bool> SaveAllAsync();
         Task<Client> CreateClientAsync(CreateClientDto client);
-        Task<Document> AddDocumentAsync(DocumentDto document);
         Task<DestinyDto> AddDestinyAsync(DestinyDto destiny);
         Task<IReadOnlyList<ClientDto>> GetClientsAsync();
         Task<ClientDto?> GetClientByIdAsync(string id);
         Task<Document?> GetDocumentByIdAsync(int id);
-        Task<IReadOnlyList<Document>> GetClientDocumentsByIdAsync(string id);
+        Task<IReadOnlyList<DocumentDto>> GetClientDocumentsByIdAsync(string id);
         Task<Client?> GetClientByIdInternalAsync(string id);
         Task<ClientDto?> LoginAsync(ClientLoginDto loginDto);
     }

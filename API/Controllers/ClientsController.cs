@@ -22,7 +22,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}/documents")]
-        public async Task<ActionResult<IReadOnlyList<Document>>> GetClientDocuments(string id)
+        public async Task<ActionResult<IReadOnlyList<DocumentDto>>> GetClientDocuments(string id)
         {
             var documents = await clientRepository.GetClientDocumentsByIdAsync(id);
             if (documents == null)
@@ -55,7 +55,7 @@ namespace API.Controllers
         }
 
         [HttpPost("uploadFile")]
-        public async Task<ActionResult<string>> AddDocument(
+        public async Task<ActionResult<DocumentDto>> AddDocument(
             [FromForm] DocumentCreateDto documentCreateDto
         )
         {
@@ -81,39 +81,84 @@ namespace API.Controllers
             };
             client.Documents.Add(document);
 
+            var documentDto = new DocumentDto
+            {
+                FileName = document.FileName,
+                ContentType = document.ContentType,
+                Url = document.Url,
+                PublicId = document.PublicId,
+                ClientID = document.ClientId,
+            };
+
             if (await clientRepository.SaveAllAsync())
-                return Ok(document.FileName);
+                return Ok(documentDto);
 
             return BadRequest("Problem saving document");
+        }
+
+        [HttpDelete("deletefile")]
+        public async Task<ActionResult> DeleteFile([FromBody] DeleteFileDto deleteFileDto)
+        {
+            var client = await clientRepository.GetClientByIdInternalAsync(deleteFileDto.ClientId);
+
+            if (client == null)
+                return BadRequest("Cannot get member from Id");
+
+            var file = client.Documents.SingleOrDefault(x => x.Id == deleteFileDto.Id);
+
+            if (file == null)
+                return BadRequest("Cannot get file from Id");
+
+            if (file.PublicId != null)
+            {
+                var result = await fileService.DeleteFileAsync(file.PublicId);
+                if (result.Error != null)
+                    return BadRequest(result.Error.Message);
+            }
+
+            client.Documents.Remove(file);
+
+            if (await clientRepository.SaveAllAsync())
+                return Ok();
+
+            return BadRequest("Problem deleting the Document");
         }
 
         [HttpGet("download/{id}")]
         public async Task<IActionResult> DownloadDocument(int id)
         {
-            var document = await clientRepository.GetDocumentByIdAsync(id);
+            try
+            {
+                var document = await clientRepository.GetDocumentByIdAsync(id);
+                if (document == null)
+                    return NotFound("Document not found");
 
-            if (document == null)
-                return NotFound("Document not found");
+                var resourceType = DetectResourceType(document.ContentType);
 
-            var resourceType = DetectResourceType(document.PublicId);
+                var fileBytes = await fileService.DownloadFileAsync(
+                    document.PublicId,
+                    resourceType
+                );
 
-            var fileBytes = await fileService.DownloadFileAsync(document.PublicId, resourceType);
-
-            return File(fileBytes, document.ContentType, document.FileName);
+                return File(fileBytes, document.ContentType, document.FileName);
+            }
+            catch (Exception ex)
+            {
+                // Logue aqui o erro para depuração
+                Console.WriteLine("Erro no download: " + ex.Message);
+                return StatusCode(500, "Erro interno ao baixar o documento: " + ex.Message);
+            }
         }
 
-        private string DetectResourceType(string publicId)
+        private string DetectResourceType(string contentType)
         {
-            var ext = Path.GetExtension(publicId).ToLowerInvariant();
-
-            if (string.IsNullOrWhiteSpace(ext))
+            if (contentType.StartsWith("image/"))
+                return "image";
+            if (string.IsNullOrWhiteSpace(contentType))
                 return "raw";
-
-            return ext switch
-            {
-                ".jpg" or ".jpeg" or ".png" or ".gif" or ".webp" => "image",
-                _ => "raw",
-            };
+            if (contentType.StartsWith("video/"))
+                return "video";
+            return "raw";
         }
     }
 }

@@ -1,0 +1,48 @@
+<div
+  class="card bg-base-100 w-1/2 mx-auto flex flex-col p-6 rounded-lg shadow-lg"
+>
+  <div class="card-title justify-center text-3xl text-primary">
+    Registrar Cliente
+  </div>
+  <div class="card-body w-full">
+    <form
+      [formGroup]="clientForm"
+      class="flex flex-col gap-4 w-full"
+      (ngSubmit)="registerClient()"
+    >
+      <app-text-input label="Nome" formControlName="name" />
+      <app-text-input label="CPF" formControlName="cpf" />
+      <app-text-input label="Email" formControlName="email" type="email" />
+      <app-text-input label="Telefone" formControlName="telephone" />
+      <app-text-input
+        label="Data de Nascimento"
+        formControlName="BirthDate"
+        type="date"
+      />
+      <app-text-input
+        label="Número do Passaporte"
+        formControlName="passNumber"
+      />
+
+      <div class="flex justify-end gap-3">
+        <button type="button" class="btn" (click)="cancel()">Cancelar</button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="!clientForm.valid"
+        >
+          Registrar
+        </button>
+      </div>
+    </form>
+
+    <div
+      *ngIf="validationErrors.length > 0"
+      class="mt-5 bg-error/10 text-error rounded-lg p-4"
+    >
+      <ul class="list-disc ml-5">
+        <li *ngFor="let error of validationErrors">{{ error }}</li>
+      </ul>
+    </div>
+  </div>
+</div>

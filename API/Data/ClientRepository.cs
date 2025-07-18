@@ -60,11 +60,6 @@ namespace API.Data
             return destinyDto;
         }
 
-        public Task<Document> AddDocumentAsync(DocumentDto document)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<Document?> GetDocumentByIdAsync(int id)
         {
             var document = await context.Documents.FindAsync(id);
@@ -108,16 +103,27 @@ namespace API.Data
             return clients.Select(CreateClientDto).ToList();
         }
 
-        public async Task<IReadOnlyList<Document>> GetClientDocumentsByIdAsync(string id)
+        public async Task<IReadOnlyList<DocumentDto>> GetClientDocumentsByIdAsync(string id)
         {
             var client = await context
                 .Clients.Include(c => c.Documents)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (client == null)
-                return new List<Document>();
+                return new List<DocumentDto>();
 
-            return client.Documents.ToList();
+            return client
+                .Documents.Select(d => new DocumentDto
+                {
+                    Id = d.Id,
+                    FileName = d.FileName,
+                    ClientID = d.ClientId,
+                    UploadedAt = d.UploadedAt,
+                    PublicId = d.PublicId,
+                    ContentType = d.ContentType,
+                    Url = d.Url,
+                })
+                .ToList();
         }
 
         public async Task<ClientDto?> LoginAsync(ClientLoginDto loginDto)
