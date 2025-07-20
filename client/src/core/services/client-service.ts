@@ -5,6 +5,8 @@ import { environment } from '../../environments/environment';
 import { AccountService } from './account-service';
 import { ClientFiles } from '../../types/clientFiles';
 import { DeleteFileDto } from '../../dtos/deleteFileDto';
+import { CpfDto } from '../../dtos/cpfDto';
+import { tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +15,7 @@ export class ClientService {
   private http = inject(HttpClient);
   private accountService = inject(AccountService);
   private baseUrl = environment.apiUrl;
+  currentClient = signal<Client | null>(null);
   editMode = signal(false);
 
   getCLients() {
@@ -23,6 +26,24 @@ export class ClientService {
     return this.http.get<Client>(this.baseUrl + 'clients/' + id);
   }
 
+  getClientByCpf(cpf: CpfDto) {
+    return this.http
+      .post<Client>(this.baseUrl + 'clients/loginclient/', cpf)
+      .pipe(
+        tap((client) => {
+          if (client) {
+            localStorage.setItem('client', JSON.stringify(client));
+            this.currentClient.set(client as Client);
+            this.accountService.logout();
+          }
+        })
+      );
+  }
+
+  logout() {
+    localStorage.removeItem('client');
+    this.currentClient.set(null);
+  }
   registerClient(client: Client) {
     return this.http.post<Client>(this.baseUrl + 'clients/', client);
   }

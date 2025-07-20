@@ -24,11 +24,21 @@
         <h3 class="text-2xl font-semibold uppercase">Vivatubismo</h3>
       </a>
     </div>
+
     <nav class="flex gap-3 my-2 uppercase text-lg text-white">
       @if(accountService.currentUser()){
       <a routerLink="/clients" routerLinkActive="text-accent">Clientes</a>
-      <a routerLink="/lists" routerLinkActive="text-accent">Listas</a>}
+      } @if(clientService.currentClient() && !accountService.currentUser()){
+      <a routerLink="/clientpage" routerLinkActive="text-accent"
+        >Pagina do Cliente</a
+      >
+      } @if(!accountService.currentUser() && !clientService.currentClient()){
+
+      <a routerLink="/clientacc" routerLinkActive="text-accent"
+        >Acesso Cliente</a
+      >}
     </nav>
+
     <div class="flex align-middle ml-auto gap-3">
       @if (accountService.currentUser(); as user) {
       <div class="dropdown dropdown-end">

@@ -33,6 +33,7 @@ namespace API.Data
                     Code = clientDto.Code,
                     BirthDate = clientDto.BirthDate,
                     PassNumber = clientDto.PassNumber,
+                    Token = string.Empty,
                 };
 
                 foreach (var dest in clientDto.Destinies)
@@ -41,7 +42,7 @@ namespace API.Data
                     {
                         Country = dest.Country,
                         City = dest.City,
-                        TravelDate = dest.TravelDate,
+                        TravelDate = DateTime.SpecifyKind(dest.TravelDate, DateTimeKind.Utc),
                         Persons = dest.Persons,
                         Tours = dest.Tours,
                         ClientId = client.Id,

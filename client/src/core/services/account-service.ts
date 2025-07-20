@@ -11,7 +11,7 @@ export class AccountService {
   private http = inject(HttpClient);
   currentUser = signal<User | null>(null);
 
-  private baseUrl = environment.apiUrl;;
+  private baseUrl = environment.apiUrl;
 
   login(creds: LoginCreds) {
     return this.http.post<User>(this.baseUrl + 'account/login', creds).pipe(
@@ -19,6 +19,8 @@ export class AccountService {
         if (user) {
           localStorage.setItem('user', JSON.stringify(user));
           this.currentUser.set(user as User);
+          localStorage.removeItem('client');
+          window.location.reload();
         }
       })
     );

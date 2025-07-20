@@ -1,0 +1,17 @@
+<div
+  class="card bg-base-100 w-1/2 mx-auto flex flex-col p-6 rounded-lg shadow-lg"
+>
+  <div class="card-body w-full">
+    <form
+      [formGroup]="cpfForm"
+      class="flex flex-col gap-4 w-full"
+      (ngSubmit)="checkCpf()"
+    >
+      <app-text-input label="Digite seu CPF" formControlName="cpf" />
+
+      <div class="flex justify-end gap-3">
+        <button type="submit" class="btn btn-primary">Entrar</button>
+      </div>
+    </form>
+  </div>
+</div>

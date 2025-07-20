@@ -2,12 +2,14 @@ import { Routes } from '@angular/router';
 import { Home } from '../features/home/home';
 import { ClientList } from '../features/clients/client-list/client-list';
 import { ClientDetailed } from '../features/clients/client-detailed/client-detailed';
-import { Lists } from '../features/lists/lists';
 import { authGuard } from '../core/guards/auth-guard';
 import { ClientDocuments } from '../features/clients/client-documents/client-documents';
 import { ClientProfile } from '../features/clients/client-profile/client-profile';
 import { clientResolver } from '../features/clients/client-resolver-resolver';
 import { ClientDestinies } from '../features/clients/client-destinies/client-destinies';
+import { ClientAccess } from '../features/clients/client-access/client-access';
+import { ClientPage } from '../features/clients/client-page/client-page';
+import { clientAuthGuard } from '../core/guards/client-auth-guard';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -33,8 +35,14 @@ export const routes: Routes = [
           { path: 'destinies', component: ClientDestinies, title: 'Destinos' },
         ],
       },
-      { path: 'lists', component: Lists },
     ],
+  },
+  { path: 'clientacc', component: ClientAccess },
+  { path: 'clientpage', component: ClientPage, canActivate: [clientAuthGuard] },
+  {
+    path: 'clientdocument',
+    component: ClientDocuments,
+    canActivate: [clientAuthGuard],
   },
   { path: '**', component: Home },
 ];

@@ -29,6 +29,13 @@ export class ClientDocuments implements OnInit {
       this.clientService.getClientDocuments(this.clientId).subscribe({
         next: (documents) => this.clientFiles.set(documents),
       });
+    } else {
+      this.clientId = this.clientService.currentClient()?.id;
+      if (this.clientId) {
+        this.clientService.getClientDocuments(this.clientId).subscribe({
+          next: (documents) => this.clientFiles.set(documents),
+        });
+      }
     }
   }
 

@@ -19,6 +19,7 @@ namespace API.Data
                 Telephone = createClientDto.Telephone,
                 Email = createClientDto.Email,
                 Code = createClientDto.Cpf,
+                Token = string.Empty,
             };
 
             context.Clients.Add(client);
@@ -81,6 +82,21 @@ namespace API.Data
             return CreateClientDto(client);
         }
 
+        public async Task<ClientDto?> LoginClient(ClientLoginDto clientLoginDto)
+        {
+            var client = await context
+                .Clients.Include(c => c.Documents)
+                .Include(c => c.Destinies)
+                .FirstOrDefaultAsync(c => c.Cpf == clientLoginDto.cpf);
+
+            if (client == null)
+                return null;
+
+            client.Token = tokenService.CreateToken(client.Email, client.Id);
+
+            return CreateClientDto(client);
+        }
+
         public async Task<Client?> GetClientByIdInternalAsync(string id)
         {
             var client = await context
@@ -124,20 +140,6 @@ namespace API.Data
                     Url = d.Url,
                 })
                 .ToList();
-        }
-
-        public async Task<ClientDto?> LoginAsync(ClientLoginDto loginDto)
-        {
-            var client = await context.Clients.SingleOrDefaultAsync(x => x.Code == loginDto.Code);
-
-            if (client == null)
-                return null;
-
-            var clientDto = CreateClientDto(client);
-
-            clientDto.Token = tokenService.CreateToken(client.Email, client.Id);
-
-            return clientDto;
         }
 
         public async Task<bool> SaveAllAsync()
@@ -186,7 +188,7 @@ namespace API.Data
                     })
                     .ToList(),
                 Code = client.Code,
-                Token = "",
+                Token = client.Token,
             };
         }
     }

@@ -8,6 +8,7 @@ namespace API.Entities
         public required string Telephone { get; set; }
         public required string Cpf { get; set; }
         public required string Code { get; set; }
+        public required string Token { get; set; } = string.Empty;
         public DateOnly? BirthDate { get; set; }
         public DateTime Created { get; set; } = DateTime.UtcNow;
         public string? PassNumber { get; set; }

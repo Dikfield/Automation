@@ -36,13 +36,15 @@
       </div>
     </form>
 
-    <div
-      *ngIf="validationErrors.length > 0"
-      class="mt-5 bg-error/10 text-error rounded-lg p-4"
-    >
+    @if(validationErrors.length > 0) {
+
+    <div class="mt-5 bg-error/10 text-error rounded-lg p-4">
       <ul class="list-disc ml-5">
-        <li *ngFor="let error of validationErrors">{{ error }}</li>
+        @for (error of validationErrors; track $index) {
+        <li>{{ error }}</li>
+        }
       </ul>
     </div>
+    }
   </div>
 </div>

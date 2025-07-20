@@ -43,10 +43,10 @@ namespace API.Controllers
             return await clientRepository.AddDestinyAsync(destinyDto);
         }
 
-        [HttpPost("login")]
+        [HttpPost("loginclient")]
         public async Task<ActionResult<ClientDto>> Login(ClientLoginDto loginDto)
         {
-            var clientDto = await clientRepository.LoginAsync(loginDto);
+            var clientDto = await clientRepository.LoginClient(loginDto);
 
             if (clientDto == null)
                 return Unauthorized("Invalid code");
