@@ -1,10 +1,4 @@
-import {
-  Component,
-  inject,
-  OnInit,
-  signal,
-  ViewChild,
-} from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import {
   ActivatedRoute,
   NavigationEnd,
@@ -42,6 +36,4 @@ export class ClientDetailed implements OnInit {
         },
       });
   }
-
-
 }
