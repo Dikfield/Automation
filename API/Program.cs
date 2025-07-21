@@ -10,16 +10,16 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenLocalhost(
-        5001,
-        listenOptions =>
-        {
-            listenOptions.UseHttps("backend-cert.pfx", "");
-        }
-    );
-});
+// builder.WebHost.ConfigureKestrel(options =>
+// {
+//     options.ListenAnyIP(
+//         5001,
+//         listenOptions =>
+//         {
+//             listenOptions.UseHttps("backend-cert.pfx", "");
+//         }
+//     );
+// });
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(opt =>
